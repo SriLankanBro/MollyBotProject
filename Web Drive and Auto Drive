@@ -1,0 +1,154 @@
+#include <NewPing.h>
+
+#define SONAR_NUM 4      // Number of sensors.
+#define MAX_DISTANCE 2000 // Maximum distance (in cm) to ping.
+
+//Motor pins
+const int M1Speed = 26;
+const int M1PinForwed = 24;
+const int M1PinReverse = 22;
+const int M2Speed = 10;
+const int M2PinForwed = 11;
+const int M2PinReverse = 12;
+
+//for serial comm between MEGA & PI
+String  inComingByte;
+
+int SonarData[4];
+int SonrMax = 0;
+byte SonarMaxIndex = 0;
+
+NewPing sonar[SONAR_NUM] = {   // Sensor object array.
+  NewPing(2, 3, MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
+  NewPing(4, 5, MAX_DISTANCE),
+  NewPing(6, 7, MAX_DISTANCE),
+  NewPing(8, 9, MAX_DISTANCE)
+};
+
+void setup() {
+  // Open serial monitor at 115200 baud to see ping results.
+  Serial.begin(115200);
+
+  //motor pin modes
+  pinMode (M1Speed, OUTPUT);
+  pinMode (M1PinForwed, OUTPUT);
+  pinMode (M1PinReverse, OUTPUT);
+  pinMode (M2Speed, OUTPUT);
+  pinMode (M2PinForwed, OUTPUT);
+  pinMode (M2PinReverse, OUTPUT);
+
+
+  //set all motor pins to zero
+  digitalWrite(M1Speed, LOW);
+  digitalWrite(M2Speed, LOW);
+
+  digitalWrite(M1PinForwed, LOW);
+  digitalWrite(M2PinForwed, LOW);
+
+  digitalWrite(M1PinReverse, LOW);
+  digitalWrite(M2PinReverse, LOW);
+
+}
+
+void loop() {
+
+  if (Serial.available() > 0) {
+    inComingByte = Serial.readStringUntil('\n');
+    inComingByte.trim();
+
+    if (inComingByte.equals("1")) {
+      void MotorForward();
+
+    }
+
+    else if (inComingByte.equals("2")) {
+      void MotorRight();
+    }
+
+    else if (inComingByte.equals("3")) {
+      void MotorLeft();
+    }
+
+    else if (inComingByte.equals("4")) {
+      void MotorBackward();
+    }
+
+    else if (inComingByte.equals("5")) {
+      void MotorStop();
+    }
+
+    else {
+      void MotorStop();
+    }
+
+  } else {
+    Serial.println("Error: Code01-No Signal from Main Computer)");
+    //nothing
+  }
+
+  // Standard Approach
+  //    if (Serial.available() > 0) {
+  //      int  inComingByte = Serial.read();
+  //
+  //      switch (inComingByte) {
+  //
+  //        case 49:
+  //          void MotorForward();
+  //          //Serial.println("MotorForward");
+  //          break;
+  //        case '2':
+  //          void MotorRight();
+  //          //Serial.println("MotorRight");
+  //          break;
+  //        case '3':
+  //          void MotorLeft();
+  //          //Serial.println("MotorLeft");
+  //          break;
+  //        case '4':
+  //          void MotorBackward();
+  //          //Serial.println("MotorBackward");
+  //          break;
+  //        case '6':
+  //          void MotorStop();
+  //          //Serial.println("MotorStopCase6");
+  //          break;
+  //        default:
+  //          void MotorStop();
+  //          //Serial.println("MotorStopDefault");
+  //
+  //      }
+  //
+  //    } else {
+  //      Serial.println("Else Function");
+  //      //nothing
+  //    }
+
+  //  //GPIO approach
+  //  int voltage = analogRead(GPIO_0);
+  //  if (voltage >= 3 ) {
+  //    void MotorForward();
+  //  } else {
+  //    void MotorStop();
+  //  }
+  //
+
+
+  //test code with while looping
+  //  if (Serial.available() > 0) {
+  //    String data = Serial.readStringUntil('\n');
+  //
+  //    data = Serial.read();
+  //    while (data == 1) {
+  //      void MotorForward();
+  //      delay(500);
+  //      void MotorLeft();
+  //      delay(500);
+  //      void MotorRight();
+  //      delay(500);
+  //      //Serial.println("MotorForwardWhileloop");
+  //    }
+  //  } else {
+  //    void MotorStop();
+  //  }
+
+}
